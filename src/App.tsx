@@ -67,8 +67,28 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  React.useEffect(() => {
+    const carouselTimer = setInterval(() => {
+      setCurrentCarouselIndex(prev => (prev + 1) % 8);
+    }, 7500);
+    return () => clearInterval(carouselTimer);
+  }, []);
+
   // Simulator active Tab: "akademic" | "schedule" | "report"
   const [activeTab, setActiveTab ] = useState<"akademic" | "schedule" | "report">("report");
+
+  // App screenshot carousel
+  const appScreenshots = [
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F90aca777b0614cf7bc9b66699bc07bc7?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F9bc089faa09746319ae7c7f3cffe4bcb?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F52b6ede358544dd397ae2fd0a62990c1?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F063ee9d6606442ceb59bb42f7da87f9d?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2Fa901417a2bbf40dda7266e797cfb371c?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F8e5fcbf19ccb4cb2bfcdb3cc8b84055c?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2Fd06b6306d83941129ec96c2a7d3d4f57?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2Ff27b7a27cca54ca9b9da605e38ea707d?format=webp&width=800&height=1200",
+  ];
+  const [carouselIndex, setCarouselIndex] = useState(0);
   
   // Simulated App States
   const [semesters, setSemesters] = useState<Semester[]>([
@@ -118,6 +138,19 @@ export default function App() {
   const [isDownloaded, setIsDownloaded] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [simulatedToast, setSimulatedToast] = useState<string | null>(null);
+  const [currentCarouselIndex, setCurrentCarouselIndex] = useState(0);
+
+  // App showcase carousel images
+  const carouselImages = [
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2Fbe5516edaa7b43d3a5ec16fa337b9ad8?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F20fde0541d764f1eb648640589108184?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F7e6f1b18999e49bb9d084b5d2824d484?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F3adf3b4e46f740578e700c44e56a0b68?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F032ce3f185d9462ca55863591da7a210?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2Fb8ce317b797a4a068c0c7bd321c24e5d?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F44a0b7e0de7c440fb869575f27649833?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F82f74b0f1e114f30bf14b63fc2cd61d1?format=webp&width=800&height=1200"
+  ];
 
   // Modals and feedback state variables
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
@@ -130,8 +163,8 @@ export default function App() {
   const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
 
   // GitHub info
-  const githubRepo = "https://github.com/XCDeveloper22/AkademicAPK.git";
-  const apkDownloadUrl = "https://raw.githubusercontent.com/XCDeveloper22/AkademicAPK/main/Akademic%20v1.2.apk";
+  const githubRepo = "https://github.com/XCDeveloper22/Akademicapp.apk.git";
+  const apkDownloadUrl = "https://raw.githubusercontent.com/XCDeveloper22/Akademicapp.apk/main/Akademic%20v1.2.1.apk";
 
   // dynamic calculation for MSU Cumulative GWA (Weighted Average)
   // GWA formulation = sum(grade * credits) / sum(credits)
@@ -546,6 +579,56 @@ export default function App() {
               </p>
             </motion.div>
 
+            {/* Latest Update Video Advertisement Carousel */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="w-full max-w-xl rounded-2xl bg-gradient-to-b from-[#251515] to-[#1a0f0f] border border-[#cca038]/30 p-4 md:p-6 relative overflow-hidden shadow-2xl"
+            >
+              <div className="absolute -top-10 -right-10 w-44 h-44 bg-[#cca038]/5 rounded-full blur-2xl pointer-events-none" />
+
+              <div className="space-y-3">
+                <div className="text-[10px] font-mono text-[#cca038] uppercase tracking-wider font-semibold">Latest Update Preview</div>
+
+                <div className="relative aspect-video rounded-xl overflow-hidden bg-[#1a0f0f] border border-[#cca038]/20">
+                  <AnimatePresence mode="wait">
+                    <motion.img
+                      key={currentCarouselIndex}
+                      src={carouselImages[currentCarouselIndex]}
+                      alt={`Akademic app screenshot ${currentCarouselIndex + 1}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className="w-full h-full object-cover"
+                    />
+                  </AnimatePresence>
+
+                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-[#000]/60 px-2.5 py-1 rounded-full backdrop-blur-sm">
+                    {carouselImages.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setCurrentCarouselIndex(idx)}
+                        className={`h-1.5 rounded-full transition-all ${
+                          idx === currentCarouselIndex
+                            ? 'w-6 bg-[#cca038]'
+                            : 'w-1.5 bg-[#cca038]/40 hover:bg-[#cca038]/60'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2">
+                  <span className="text-xs text-[#a19088] font-mono">
+                    Frame {currentCarouselIndex + 1} / {carouselImages.length}
+                  </span>
+                  <span className="text-[10px] font-mono text-[#cca038]/70">Auto-playing</span>
+                </div>
+              </div>
+            </motion.div>
+
             {/* Main Interactive Premium Download Center Card */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -560,7 +643,7 @@ export default function App() {
                 <div className="space-y-1">
                   <div className="text-[10px] font-mono text-[#cca038] uppercase tracking-wider">OFFICIAL APP</div>
                   <div className="text-white font-display font-extrabold text-xl flex items-center gap-2">
-                    Akademic v1.2.apk
+                    Akademic v1.2.1.apk
                     <span className="text-[10px] px-2 py-0.5 rounded bg-[#9c1c1c]/30 text-[#f5ecd7] border border-[#9c1c1c]/60 font-mono font-semibold">XC RELEASE</span>
                   </div>
                 </div>
@@ -582,16 +665,16 @@ export default function App() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <a
-                    href="https://github.com/XCDeveloper22/AkademicAPK/raw/main/Akademic%20v1.2.apk"
+                    href="https://github.com/XCDeveloper22/Akademicapp.apk/raw/main/Akademic%20v1.2.1.apk"
                     download
                     className="p-3.5 rounded-xl bg-[#110707] hover:bg-[#1a0f0f] border border-[#cca038]/20 hover:border-[#cca038]/50 text-center font-semibold text-xs text-[#cca038] flex items-center justify-center gap-2 transition-colors"
                   >
                     <FileDown size={14} />
                     <span>Download Mirror Link 1</span>
                   </a>
-                  
+
                   <a
-                    href="https://raw.githubusercontent.com/XCDeveloper22/AkademicAPK/main/Akademic%20v1.2.apk"
+                    href="https://raw.githubusercontent.com/XCDeveloper22/Akademicapp.apk/main/Akademic%20v1.2.1.apk"
                     target="_blank"
                     rel="noreferrer"
                     className="p-3.5 rounded-xl bg-[#110707] hover:bg-[#1a0f0f] border border-[#cca038]/20 hover:border-[#cca038]/50 text-center font-semibold text-xs text-[#cca038] flex items-center justify-center gap-2 transition-colors"
@@ -757,7 +840,7 @@ export default function App() {
                 <Sparkles size={12} className="text-[#cca038] animate-pulse" />
                 Live Interactive App Demo
               </span>
-              <p className="text-[10px] text-zinc-400">Add classes and record grades below to see recalculations</p>
+              <p className="text-[10px] text-zinc-400">Explore the app screens</p>
             </div>
 
             <div className="relative p-2.5 rounded-[44px] bg-[#221616] border-4 border-[#cca038]/50 shadow-2xl shadow-[#110707] w-76 sm:w-82 max-w-full group">
@@ -798,11 +881,18 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* APP SIMULATOR CONTAINER */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-none pb-20">
+                {/* SCREENSHOT CAROUSEL */}
+                <div className="flex-1 overflow-hidden relative bg-[#150d0d] flex flex-col">
                   
-                  {/* APP TAB 1: AKADEMIC (PORTAL GRADE SYSTEM) */}
-                  {activeTab === "akademic" && (
+                  {/* CAROUSEL IMAGE DISPLAY */}
+                  <img
+                    src={appScreenshots[carouselIndex]}
+                    alt={`Akademic App Screenshot ${carouselIndex + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+
+                  {/* Hidden: APP TAB 1: AKADEMIC (PORTAL GRADE SYSTEM) */}
+                  {false && activeTab === "akademic" && (
                     <div className="space-y-4">
                       
                       {/* Crimson Academic Banner Segment (Simulates top card in screenshot 4) */}
@@ -963,8 +1053,8 @@ export default function App() {
                     </div>
                   )}
 
-                  {/* APP TAB 2: SCHEDULE PLANNER */}
-                  {activeTab === "schedule" && (
+                  {/* Hidden: APP TAB 2: SCHEDULE PLANNER */}
+                  {false && activeTab === "schedule" && (
                     <div className="space-y-4">
                       
                       {/* Class Schedule header with Red Circular add key from Snapshot 3 */}
@@ -1053,8 +1143,8 @@ export default function App() {
                     </div>
                   )}
 
-                  {/* APP TAB 3: AKADEMIC REPORT (OFFICIAL PREVIEW CARD) */}
-                  {activeTab === "report" && (
+                  {/* Hidden: APP TAB 3: AKADEMIC REPORT (OFFICIAL PREVIEW CARD) */}
+                  {false && activeTab === "report" && (
                     <div className="space-y-4">
                       
                       <div className="space-y-0.5">
@@ -1149,6 +1239,36 @@ export default function App() {
                     </div>
                   )}
 
+                </div>
+
+                {/* Carousel Navigation Controls */}
+                <div className="absolute bottom-16 left-0 right-0 px-3 py-2 flex items-center justify-between bg-gradient-to-t from-[#150d0d] to-transparent">
+                  <button
+                    onClick={() => setCarouselIndex((prev) => (prev - 1 + appScreenshots.length) % appScreenshots.length)}
+                    className="text-[#cca038] hover:scale-110 active:scale-95 transition-transform"
+                    aria-label="Previous screenshot"
+                  >
+                    <ChevronRight size={20} className="rotate-180" />
+                  </button>
+
+                  <div className="flex items-center gap-1.5">
+                    {appScreenshots.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setCarouselIndex(idx)}
+                        className={`h-1.5 rounded-full transition-all ${idx === carouselIndex ? "bg-[#cca038] w-5" : "bg-[#cca038]/40 w-1.5 hover:bg-[#cca038]/60"}`}
+                        aria-label={`Go to screenshot ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => setCarouselIndex((prev) => (prev + 1) % appScreenshots.length)}
+                    className="text-[#cca038] hover:scale-110 active:scale-95 transition-transform"
+                    aria-label="Next screenshot"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
                 </div>
 
                 {/* BOTTOM NAVIGATION (MSU Exact tabs from screenshot) */}
