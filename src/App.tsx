@@ -67,6 +67,13 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  React.useEffect(() => {
+    const carouselTimer = setInterval(() => {
+      setCurrentCarouselIndex(prev => (prev + 1) % 8);
+    }, 7500);
+    return () => clearInterval(carouselTimer);
+  }, []);
+
   // Simulator active Tab: "akademic" | "schedule" | "report"
   const [activeTab, setActiveTab ] = useState<"akademic" | "schedule" | "report">("report");
 
@@ -131,6 +138,19 @@ export default function App() {
   const [isDownloaded, setIsDownloaded] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [simulatedToast, setSimulatedToast] = useState<string | null>(null);
+  const [currentCarouselIndex, setCurrentCarouselIndex] = useState(0);
+
+  // App showcase carousel images
+  const carouselImages = [
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2Fbe5516edaa7b43d3a5ec16fa337b9ad8?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F20fde0541d764f1eb648640589108184?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F7e6f1b18999e49bb9d084b5d2824d484?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F3adf3b4e46f740578e700c44e56a0b68?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F032ce3f185d9462ca55863591da7a210?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2Fb8ce317b797a4a068c0c7bd321c24e5d?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F44a0b7e0de7c440fb869575f27649833?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F82f74b0f1e114f30bf14b63fc2cd61d1?format=webp&width=800&height=1200"
+  ];
 
   // Modals and feedback state variables
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
@@ -557,6 +577,56 @@ export default function App() {
               <p className="text-[#a19088] text-sm sm:text-base md:text-lg max-w-xl leading-relaxed">
                 The comprehensive high-performance grade tracking & scheduling planner engineered for university students. Keep your records, compute GWA, manage semesters, and view your schedule on one premium safe offline app.
               </p>
+            </motion.div>
+
+            {/* Latest Update Video Advertisement Carousel */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="w-full max-w-xl rounded-2xl bg-gradient-to-b from-[#251515] to-[#1a0f0f] border border-[#cca038]/30 p-4 md:p-6 relative overflow-hidden shadow-2xl"
+            >
+              <div className="absolute -top-10 -right-10 w-44 h-44 bg-[#cca038]/5 rounded-full blur-2xl pointer-events-none" />
+
+              <div className="space-y-3">
+                <div className="text-[10px] font-mono text-[#cca038] uppercase tracking-wider font-semibold">Latest Update Preview</div>
+
+                <div className="relative aspect-video rounded-xl overflow-hidden bg-[#1a0f0f] border border-[#cca038]/20">
+                  <AnimatePresence mode="wait">
+                    <motion.img
+                      key={currentCarouselIndex}
+                      src={carouselImages[currentCarouselIndex]}
+                      alt={`Akademic app screenshot ${currentCarouselIndex + 1}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className="w-full h-full object-cover"
+                    />
+                  </AnimatePresence>
+
+                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-[#000]/60 px-2.5 py-1 rounded-full backdrop-blur-sm">
+                    {carouselImages.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setCurrentCarouselIndex(idx)}
+                        className={`h-1.5 rounded-full transition-all ${
+                          idx === currentCarouselIndex
+                            ? 'w-6 bg-[#cca038]'
+                            : 'w-1.5 bg-[#cca038]/40 hover:bg-[#cca038]/60'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2">
+                  <span className="text-xs text-[#a19088] font-mono">
+                    Frame {currentCarouselIndex + 1} / {carouselImages.length}
+                  </span>
+                  <span className="text-[10px] font-mono text-[#cca038]/70">Auto-playing</span>
+                </div>
+              </div>
             </motion.div>
 
             {/* Main Interactive Premium Download Center Card */}
