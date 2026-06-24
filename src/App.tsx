@@ -130,8 +130,8 @@ export default function App() {
   const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
 
   // GitHub info
-  const githubRepo = "https://github.com/XCDeveloper22/AkademicAPK.git";
-  const apkDownloadUrl = "https://raw.githubusercontent.com/XCDeveloper22/AkademicAPK/main/Akademic%20v1.2.apk";
+  const githubRepo = "https://github.com/XCDeveloper22/Akademicapp.apk.git";
+  const apkDownloadUrl = "https://raw.githubusercontent.com/XCDeveloper22/Akademicapp.apk/main/Akademic%20v1.2.1.apk";
 
   // dynamic calculation for MSU Cumulative GWA (Weighted Average)
   // GWA formulation = sum(grade * credits) / sum(credits)
@@ -560,7 +560,7 @@ export default function App() {
                 <div className="space-y-1">
                   <div className="text-[10px] font-mono text-[#cca038] uppercase tracking-wider">OFFICIAL APP</div>
                   <div className="text-white font-display font-extrabold text-xl flex items-center gap-2">
-                    Akademic v1.2.apk
+                    Akademic v1.2.1.apk
                     <span className="text-[10px] px-2 py-0.5 rounded bg-[#9c1c1c]/30 text-[#f5ecd7] border border-[#9c1c1c]/60 font-mono font-semibold">XC RELEASE</span>
                   </div>
                 </div>
@@ -582,16 +582,16 @@ export default function App() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <a
-                    href="https://github.com/XCDeveloper22/AkademicAPK/raw/main/Akademic%20v1.2.apk"
+                    href="https://github.com/XCDeveloper22/Akademicapp.apk/raw/main/Akademic%20v1.2.1.apk"
                     download
                     className="p-3.5 rounded-xl bg-[#110707] hover:bg-[#1a0f0f] border border-[#cca038]/20 hover:border-[#cca038]/50 text-center font-semibold text-xs text-[#cca038] flex items-center justify-center gap-2 transition-colors"
                   >
                     <FileDown size={14} />
                     <span>Download Mirror Link 1</span>
                   </a>
-                  
+
                   <a
-                    href="https://raw.githubusercontent.com/XCDeveloper22/AkademicAPK/main/Akademic%20v1.2.apk"
+                    href="https://raw.githubusercontent.com/XCDeveloper22/Akademicapp.apk/main/Akademic%20v1.2.1.apk"
                     target="_blank"
                     rel="noreferrer"
                     className="p-3.5 rounded-xl bg-[#110707] hover:bg-[#1a0f0f] border border-[#cca038]/20 hover:border-[#cca038]/50 text-center font-semibold text-xs text-[#cca038] flex items-center justify-center gap-2 transition-colors"
