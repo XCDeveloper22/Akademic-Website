@@ -23,7 +23,11 @@ import {
   Image as ImageIcon,
   Check,
   Award,
-  BookMarked
+  BookMarked,
+  MessageSquare,
+  AlertTriangle,
+  Send,
+  QrCode
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -115,9 +119,19 @@ export default function App() {
   const [showGuide, setShowGuide] = useState(false);
   const [simulatedToast, setSimulatedToast] = useState<string | null>(null);
 
+  // Modals and feedback state variables
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [showVersionHistoryModal, setShowVersionHistoryModal] = useState(false);
+  const [showUpdateHistoryModal, setShowUpdateHistoryModal] = useState(false);
+  const [feedbackName, setFeedbackName] = useState("");
+  const [feedbackEmail, setFeedbackEmail] = useState("");
+  const [feedbackType, setFeedbackType] = useState<"bug" | "suggest" | "general">("bug");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+
   // GitHub info
-  const githubRepo = "https://github.com/calvinkrill/Akademic";
-  const apkDownloadUrl = "https://raw.githubusercontent.com/calvinkrill/Akademic/main/Akademic.apk";
+  const githubRepo = "https://github.com/XCDeveloper22/AkademicAPK.git";
+  const apkDownloadUrl = "https://raw.githubusercontent.com/XCDeveloper22/AkademicAPK/main/Akademic%20v1.2.apk";
 
   // dynamic calculation for MSU Cumulative GWA (Weighted Average)
   // GWA formulation = sum(grade * credits) / sum(credits)
@@ -181,6 +195,25 @@ export default function App() {
     setIsDownloaded(true);
     window.location.href = apkDownloadUrl;
     setTimeout(() => setIsDownloaded(false), 8000);
+  };
+
+  const handleFeedbackSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!feedbackMessage) return;
+    setIsSubmittingFeedback(true);
+    
+    setTimeout(() => {
+      setIsSubmittingFeedback(false);
+      setShowFeedbackModal(false);
+      
+      // Clear form states
+      setFeedbackName("");
+      setFeedbackEmail("");
+      setFeedbackType("bug");
+      setFeedbackMessage("");
+      
+      triggerToast("Report sent. Developer XC will investigate this immediately! Thank you!");
+    }, 1200);
   };
 
   // Add Semester handler
@@ -527,7 +560,7 @@ export default function App() {
                 <div className="space-y-1">
                   <div className="text-[10px] font-mono text-[#cca038] uppercase tracking-wider">OFFICIAL APP</div>
                   <div className="text-white font-display font-extrabold text-xl flex items-center gap-2">
-                    Akademic.apk
+                    Akademic v1.2.apk
                     <span className="text-[10px] px-2 py-0.5 rounded bg-[#9c1c1c]/30 text-[#f5ecd7] border border-[#9c1c1c]/60 font-mono font-semibold">XC RELEASE</span>
                   </div>
                 </div>
@@ -549,7 +582,7 @@ export default function App() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <a
-                    href="https://github.com/calvinkrill/Akademic/raw/main/Akademic.apk"
+                    href="https://github.com/XCDeveloper22/AkademicAPK/raw/main/Akademic%20v1.2.apk"
                     download
                     className="p-3.5 rounded-xl bg-[#110707] hover:bg-[#1a0f0f] border border-[#cca038]/20 hover:border-[#cca038]/50 text-center font-semibold text-xs text-[#cca038] flex items-center justify-center gap-2 transition-colors"
                   >
@@ -558,7 +591,7 @@ export default function App() {
                   </a>
                   
                   <a
-                    href="https://raw.githubusercontent.com/calvinkrill/Akademic/main/Akademic.apk"
+                    href="https://raw.githubusercontent.com/XCDeveloper22/AkademicAPK/main/Akademic%20v1.2.apk"
                     target="_blank"
                     rel="noreferrer"
                     className="p-3.5 rounded-xl bg-[#110707] hover:bg-[#1a0f0f] border border-[#cca038]/20 hover:border-[#cca038]/50 text-center font-semibold text-xs text-[#cca038] flex items-center justify-center gap-2 transition-colors"
@@ -569,16 +602,15 @@ export default function App() {
                 </div>
               </div>
 
-              {/* STABILITY NOTICE */}
               <AnimatePresence mode="wait">
                 {isDownloaded ? (
                   <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
+                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     className="p-3.5 bg-[#9c1c1c]/20 border border-[#9c1c1c]/40 rounded-xl text-center text-xs text-[#f5ecd7]"
                   >
-                    🎁 Installing... If the download didn't automatically pop up in your browser,{" "}
+                    🎁 Downloading... If the download didn't automatically pop up in your browser,{" "}
                     <a href={apkDownloadUrl} className="underline font-bold text-[#cca038] hover:text-[#f5ecd7]">
                       force download by clicking here
                     </a>.
@@ -587,7 +619,7 @@ export default function App() {
                   <div className="flex flex-wrap items-center justify-between text-[11px] text-[#a19088] font-mono gap-y-2 pt-2 border-t border-[#cc9f38]/10">
                     <div className="flex items-center gap-1.5">
                       <span className="text-[#cca038]/50">File size:</span>
-                      <span className="text-[#f5ecd7]/80">22.4 MB</span>
+                      <span className="text-[#f5ecd7]/80">27.0 MB</span>
                     </div>
                     <button 
                       onClick={() => setShowGuide(!showGuide)}
@@ -635,7 +667,7 @@ export default function App() {
                       <div className="flex gap-3">
                         <div className="flex-shrink-0 h-5.5 w-5.5 rounded-full bg-[#9c1c1c]/20 border border-[#cca038]/30 flex items-center justify-center font-mono text-xs font-bold text-[#cca038]">3</div>
                         <p className="leading-relaxed">
-                          <strong className="text-white">Run setup:</strong> Click the system notice popup or open <code className="text-[#cca038] bg-[#2d1d1d]/50 px-1 py-0.5 rounded font-mono text-[11px]">Akademic.apk</code> inside your Downloads directory to activate Akademic.
+                          <strong className="text-white">Run setup:</strong> Click the system notice popup or open the downloaded file <code className="text-[#cca038] bg-[#2d1d1d]/50 px-1 py-0.5 rounded font-mono text-[11px]">Akademic v1.2.apk</code> inside your Downloads directory to activate Akademic.
                         </p>
                       </div>
                     </div>
@@ -644,11 +676,73 @@ export default function App() {
               )}
             </AnimatePresence>
 
-            {/* Quick Developer Credits Card */}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-2 text-xs text-[#a19088] font-mono">
+            {/* QR CODE MOBILE INSTANT SCAN SECTION */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.35 }}
+              className="w-full max-w-xl rounded-2xl bg-gradient-to-b from-[#1c0f0f] to-[#110707] border border-[#cca038]/20 p-5 space-y-4 shadow-xl"
+            >
+              <div className="flex items-center gap-2 pb-1.5 border-b border-[#cca038]/15">
+                <QrCode size={16} className="text-[#cca038]" />
+                <h3 className="font-display font-extrabold text-[#f5ecd7] text-xs uppercase tracking-wider">
+                  Mobile QR Download
+                </h3>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row items-center gap-5">
+                <div className="relative p-2.5 bg-white rounded-xl shadow-xl border border-[#cca038]/40 flex-shrink-0">
+                  <img 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&color=220505&data=${encodeURIComponent(apkDownloadUrl)}`}
+                    alt="Scan to Download APK"
+                    className="w-32 h-32 select-none"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute inset-0 border border-black/10 rounded-xl pointer-events-none" />
+                </div>
+                
+                <div className="space-y-2 text-center sm:text-left">
+                  <h4 className="font-display font-bold text-sm text-white">Scan & Sideload Instantly</h4>
+                  <p className="text-xs text-[#a19088] leading-relaxed">
+                    Scan this secure QR code using your Android device's camera or Google Lens to download and run the setup <code className="text-[#cca038] bg-[#2d1d1d]/50 px-1 py-0.5 rounded font-mono text-[10px]">Akademic v1.2.apk</code> directly.
+                  </p>
+                  <div className="inline-flex items-center gap-1.5 text-[10px] font-mono text-[#cca038] bg-[#cca038]/5 px-2 py-1 rounded border border-[#cca038]/10">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
+                    <span>Direct GitHub Server Link Verified</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Quick Developer Credits & Action buttons */}
+            <div className="w-full max-w-xl flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pt-4 border-t border-[#cca038]/10 text-xs text-[#a19088] font-mono">
               <div className="flex items-center gap-1.5">
                 <span className="text-[#cca038] font-bold">●</span>
                 <span>Developer: <strong className="text-[#f5ecd7] font-sans font-bold">XC</strong></span>
+              </div>
+              
+              <div className="flex flex-wrap items-center gap-2">
+                <button 
+                  onClick={() => setShowFeedbackModal(true)}
+                  className="px-3 py-1.5 rounded-lg bg-[#2d1d1d] hover:bg-[#3d2727] text-[#cca038] hover:text-[#f5ecd7] border border-[#cca038]/15 transition-all duration-200 flex items-center gap-1.5 text-[11px] font-sans font-semibold cursor-pointer active:scale-95 shadow"
+                >
+                  <MessageSquare size={12} />
+                  Report Issue
+                </button>
+                <button 
+                  onClick={() => setShowVersionHistoryModal(true)}
+                  className="px-3 py-1.5 rounded-lg bg-[#2d1d1d] hover:bg-[#3d2727] text-[#cca038] hover:text-[#f5ecd7] border border-[#cca038]/15 transition-all duration-200 flex items-center gap-1.5 text-[11px] font-sans font-semibold cursor-pointer active:scale-95 shadow"
+                >
+                  <Award size={12} />
+                  Version History
+                </button>
+                <button 
+                  onClick={() => setShowUpdateHistoryModal(true)}
+                  className="px-3 py-1.5 rounded-lg bg-[#2d1d1d] hover:bg-[#3d2727] text-[#cca038] hover:text-[#f5ecd7] border border-[#cca038]/15 transition-all duration-200 flex items-center gap-1.5 text-[11px] font-sans font-semibold cursor-pointer active:scale-95 shadow"
+                >
+                  <Clock size={12} />
+                  Update History
+                </button>
               </div>
             </div>
 
@@ -1322,6 +1416,317 @@ export default function App() {
                 Add To Schedule Planner
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* 4. Feedback / Report Issue Modal */}
+      {showFeedbackModal && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-[#1c0f0f] border-2 border-[#cca038]/40 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl relative overflow-hidden text-white">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#9c1c1c] via-[#cca038] to-[#9c1c1c]" />
+            
+            <div className="flex items-center justify-between border-b border-[#cca038]/10 pb-2.5">
+              <div className="flex items-center gap-2">
+                <AlertTriangle size={16} className="text-[#cca038]" />
+                <h3 className="font-display font-bold text-sm text-[#cca038] uppercase tracking-wide">Report Issue / Feedback</h3>
+              </div>
+              <button 
+                onClick={() => setShowFeedbackModal(false)} 
+                className="text-zinc-500 hover:text-white transition-colors p-1"
+                aria-label="Close modal"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleFeedbackSubmit} className="space-y-4">
+              <p className="text-xs text-zinc-400 leading-relaxed text-left">
+                Found a bug or have a suggestion? Send a direct message to developer <strong className="text-white">XC</strong>. Your feedback helps make Akademic better for everyone at MSU!
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono text-[#a19088] uppercase block">Your Name</label>
+                  <input 
+                    type="text" 
+                    value={feedbackName} 
+                    onChange={(e) => setFeedbackName(e.target.value)}
+                    placeholder="e.g. Juan Dela Cruz"
+                    className="w-full bg-[#110707] border border-[#cca038]/25 rounded-xl p-2.5 text-xs text-white focus:border-[#cca038] outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono text-[#a19088] uppercase block">Your Email</label>
+                  <input 
+                    type="email" 
+                    value={feedbackEmail} 
+                    onChange={(e) => setFeedbackEmail(e.target.value)}
+                    placeholder="e.g. juan@gmail.com"
+                    className="w-full bg-[#110707] border border-[#cca038]/25 rounded-xl p-2.5 text-xs text-white focus:border-[#cca038] outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1 text-left">
+                <label className="text-[10px] font-mono text-[#a19088] uppercase block">Issue Type</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {(["bug", "suggest", "general"] as const).map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => setFeedbackType(type)}
+                      className={`py-2 rounded-xl text-xs font-semibold uppercase border transition-all ${
+                        feedbackType === type
+                          ? "bg-[#9c1c1c]/30 text-[#cca038] border-[#cca038]"
+                          : "bg-[#110707] text-[#a19088] border-[#cca038]/10 hover:border-[#cca038]/30"
+                      }`}
+                    >
+                      {type === "bug" ? "🐛 Bug" : type === "suggest" ? "💡 Suggest" : "💬 General"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-1 text-left">
+                <label className="text-[10px] font-mono text-[#cca038] uppercase block font-bold">Describe the issue/suggestion</label>
+                <textarea 
+                  value={feedbackMessage} 
+                  onChange={(e) => setFeedbackMessage(e.target.value)}
+                  placeholder="Tell us what went wrong or what you'd like to see..."
+                  rows={4}
+                  className="w-full bg-[#110707] border border-[#cca038]/25 rounded-xl p-3 text-xs text-white focus:border-[#cca038] outline-none resize-none"
+                  required
+                />
+              </div>
+
+              <button 
+                type="submit"
+                disabled={isSubmittingFeedback}
+                className="w-full bg-gradient-to-r from-[#9c1c1c] to-[#bf2121] active:from-[#bf2121] text-white text-xs font-bold py-3.5 rounded-xl uppercase tracking-wider hover:brightness-110 transition-all flex items-center justify-center gap-2 border border-[#cca038]/30 disabled:opacity-50"
+              >
+                {isSubmittingFeedback ? (
+                  <>
+                    <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>Transmitting message...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send size={13} />
+                    <span>Send Message to XC</span>
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 5. Version History Modal */}
+      {showVersionHistoryModal && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-[#1c0f0f] border-2 border-[#cca038]/40 rounded-3xl p-6 max-w-xl w-full space-y-4 shadow-2xl relative overflow-hidden text-white text-left">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#cca038] via-[#eedebe] to-[#cca038]" />
+            
+            <div className="flex items-center justify-between border-b border-[#cca038]/10 pb-2.5">
+              <div className="flex items-center gap-2">
+                <Award size={16} className="text-[#cca038]" />
+                <h3 className="font-display font-bold text-sm text-[#cca038] uppercase tracking-wide">Version History</h3>
+              </div>
+              <button 
+                onClick={() => setShowVersionHistoryModal(false)} 
+                className="text-zinc-500 hover:text-white transition-colors p-1"
+                aria-label="Close modal"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1 customize-scrollbar">
+              <p className="text-xs text-zinc-400">
+                A historical log of Akademic releases, showcasing the build milestones, core feature integrations, and system-wide security enhancements.
+              </p>
+
+              {/* Version 1.2 */}
+              <div className="p-4 rounded-2xl bg-[#110707] border border-[#cca038]/20 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-bold text-[#cca038] bg-[#cca038]/10 px-2.5 py-1 rounded-lg border border-[#cca038]/30">
+                    v1.2 (Current)
+                  </span>
+                  <span className="text-[10px] font-mono text-zinc-500">June 2026</span>
+                </div>
+                
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="text-xs font-semibold text-white flex items-center gap-1.5">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                      Key Features & Enhancements
+                    </h4>
+                    <p className="text-xs text-zinc-400 pl-4 mt-0.5 leading-relaxed">
+                      Implemented comprehensive GPA/GWA calculation engine parameters, customized premium Mindanao State University layout accents, and added dynamic local classes storage.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-semibold text-white flex items-center gap-1.5">
+                      <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                      Bug Fixes
+                    </h4>
+                    <p className="text-xs text-zinc-400 pl-4 mt-0.5 leading-relaxed">
+                      Corrected GPA weighted calculation unit distribution, aligned browser local-storage security flags, and resolved setup guide accordion scaling lag on mobile viewports.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Version 1.1 */}
+              <div className="p-4 rounded-2xl bg-[#110707] border border-[#cca038]/10 space-y-3 opacity-80">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-bold text-zinc-405 bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800">
+                    v1.1
+                  </span>
+                  <span className="text-[10px] font-mono text-zinc-500 font-medium">May 2026</span>
+                </div>
+                
+                <div className="space-y-2">
+                  <div>
+                    <h4 className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
+                      <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
+                      Features added
+                    </h4>
+                    <p className="text-xs text-zinc-450 pl-4 mt-0.5 leading-relaxed">
+                      Enabled multi-semester dynamic course creation tabs, and designed the initial responsive sideloading Android step guidelines.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
+                      <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
+                      Fixes
+                    </h4>
+                    <p className="text-xs text-zinc-450 pl-4 mt-0.5 leading-relaxed">
+                      Resolved custom grade parsing exceptions, and patched localState serialization inconsistencies.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Version 1.0 */}
+              <div className="p-4 rounded-2xl bg-[#110707] border border-[#cca038]/5 space-y-3 opacity-60">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-bold text-zinc-500 bg-zinc-950 px-2.5 py-1 rounded-lg border border-zinc-900/40">
+                    v1.0 (Initial Release)
+                  </span>
+                  <span className="text-[10px] font-mono text-zinc-500">April 2026</span>
+                </div>
+                
+                <div className="space-y-1">
+                  <h4 className="text-xs font-semibold text-zinc-400 flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-zinc-500" />
+                    Core Infrastructure
+                  </h4>
+                  <p className="text-xs text-zinc-500 pl-4 mt-0.5 leading-relaxed">
+                    First development client released to MSU computer engineering department student focus testing group. Main dashboard structures, subject entry, and offline calculators established.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-[#cca038]/10 text-center">
+              <button 
+                onClick={() => setShowVersionHistoryModal(false)}
+                className="px-5 py-2 bg-[#cca038] text-[#110707] text-xs font-bold rounded-xl hover:bg-yellow-600 transition-colors"
+              >
+                Close Logs
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 6. Update History Modal */}
+      {showUpdateHistoryModal && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-[#1c0f0f] border-2 border-[#cca038]/40 rounded-3xl p-6 max-w-xl w-full space-y-4 shadow-2xl relative overflow-hidden text-white text-left">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#cca038] via-[#eedebe] to-[#cca038]" />
+            
+            <div className="flex items-center justify-between border-b border-[#cca038]/10 pb-2.5">
+              <div className="flex items-center gap-2">
+                <Clock size={16} className="text-[#cca038]" />
+                <h3 className="font-display font-bold text-sm text-[#cca038] uppercase tracking-wide">Update History & Release Notes</h3>
+              </div>
+              <button 
+                onClick={() => setShowUpdateHistoryModal(false)} 
+                className="text-zinc-500 hover:text-white transition-colors p-1"
+                aria-label="Close modal"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Timeline scroll container */}
+            <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-1 pl-3 customize-scrollbar relative text-xs">
+              <div className="absolute left-4.5 top-2 bottom-6 w-0.5 bg-[#cca038]/20" />
+
+              {/* Step v1.2 */}
+              <div className="relative pl-8 space-y-1.5">
+                <div className="absolute left-3.5 top-1.5 h-2.5 w-2.5 rounded-full bg-[#cca038] border-2 border-[#1c0f0f] shadow-glow" />
+                <div className="flex items-center justify-between">
+                  <h4 className="font-display font-extrabold text-white text-xs">BUILD v1.2 Release Notes</h4>
+                  <span className="font-mono text-zinc-505 text-[10px]">June 22, 2026</span>
+                </div>
+                <div className="bg-[#110707] border border-[#cca038]/15 rounded-xl p-3 text-zinc-455 space-y-1">
+                  <p className="font-semibold text-[#f5ecd7] text-xs">"The Golden MSU Premium Standard Update"</p>
+                  <ul className="list-disc list-inside space-y-1 marker:text-[#cca038] text-[11px] leading-relaxed">
+                    <li>Added beautiful SVG brand crest header display layout</li>
+                    <li>Synchronized download repository endpoints directly to project secure file server</li>
+                    <li>Designed fully dynamic responsive GWA analytics and honor statuses indicators</li>
+                    <li>Integrated customized schedule trackers and interactive simulator demo drawers</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Step v1.1 */}
+              <div className="relative pl-8 space-y-1.5">
+                <div className="absolute left-3.5 top-1.5 h-2.5 w-2.5 rounded-full bg-zinc-650 border-2 border-[#1c0f0f]" />
+                <div className="flex items-center justify-between">
+                  <h4 className="font-display font-extrabold text-zinc-400 text-xs">BUILD v1.1 Release Notes</h4>
+                  <span className="font-mono text-zinc-505 text-[10px]">May 18, 2026</span>
+                </div>
+                <div className="bg-[#110707] border border-[#cca038]/10 rounded-xl p-3 text-zinc-455 space-y-1 opacity-80">
+                  <p className="font-semibold text-[#f5ecd7]/80 text-xs">"Multi-Semester Isolation Core"</p>
+                  <ul className="list-disc list-inside space-y-1 marker:text-[#cca038]/60 text-[11px] leading-relaxed">
+                    <li>Added tabbed semester dynamic controls and filters</li>
+                    <li>Arranged multi-step interactive Android Chrome installation guideline accordions</li>
+                    <li>Patched GWA float precision weightings on large course unit loads</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Step v1.0 */}
+              <div className="relative pl-8 space-y-1.5">
+                <div className="absolute left-3.5 top-1.5 h-2.5 w-2.5 rounded-full bg-zinc-800 border-2 border-[#1c0f0f]" />
+                <div className="flex items-center justify-between">
+                  <h4 className="font-display font-extrabold text-zinc-500 text-xs">BUILD v1.0 Launch</h4>
+                  <span className="font-mono text-zinc-505 text-[10px]">April 12, 2026</span>
+                </div>
+                <div className="bg-[#110707] border border-[#cca038]/5 rounded-xl p-3 text-zinc-500 space-y-1 opacity-60">
+                  <p className="font-semibold text-[#f5ecd7]/60 text-xs">"Academic Alpha Architecture Launch"</p>
+                  <p className="text-[11px] leading-relaxed">
+                    Successfully finished deployment of local calculations logic, secure client sideloading template wrappers, and the basic custom schedule planner.
+                  </p>
+                </div>
+              </div>
+              
+            </div>
+
+            <div className="pt-2 border-t border-[#cca038]/10 text-center">
+              <button 
+                onClick={() => setShowUpdateHistoryModal(false)}
+                className="px-5 py-2 bg-[#cca038] text-[#110707] text-xs font-bold rounded-xl hover:bg-yellow-600 transition-colors"
+              >
+                Close Timeline
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -1,6 +1,8 @@
 {
-  "name": "Download Akademic",
+  "name": "Akademic Website ",
   "description": "Download page for the Akademic mobile app on Android",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
