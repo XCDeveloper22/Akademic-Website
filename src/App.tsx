@@ -69,6 +69,19 @@ export default function App() {
 
   // Simulator active Tab: "akademic" | "schedule" | "report"
   const [activeTab, setActiveTab ] = useState<"akademic" | "schedule" | "report">("report");
+
+  // App screenshot carousel
+  const appScreenshots = [
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F90aca777b0614cf7bc9b66699bc07bc7?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F9bc089faa09746319ae7c7f3cffe4bcb?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F52b6ede358544dd397ae2fd0a62990c1?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F063ee9d6606442ceb59bb42f7da87f9d?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2Fa901417a2bbf40dda7266e797cfb371c?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2F8e5fcbf19ccb4cb2bfcdb3cc8b84055c?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2Fd06b6306d83941129ec96c2a7d3d4f57?format=webp&width=800&height=1200",
+    "https://cdn.builder.io/api/v1/image/assets%2F9c9ccda5f5844879a2f665afd5155f4d%2Ff27b7a27cca54ca9b9da605e38ea707d?format=webp&width=800&height=1200",
+  ];
+  const [carouselIndex, setCarouselIndex] = useState(0);
   
   // Simulated App States
   const [semesters, setSemesters] = useState<Semester[]>([
@@ -757,7 +770,7 @@ export default function App() {
                 <Sparkles size={12} className="text-[#cca038] animate-pulse" />
                 Live Interactive App Demo
               </span>
-              <p className="text-[10px] text-zinc-400">Add classes and record grades below to see recalculations</p>
+              <p className="text-[10px] text-zinc-400">Explore the app screens</p>
             </div>
 
             <div className="relative p-2.5 rounded-[44px] bg-[#221616] border-4 border-[#cca038]/50 shadow-2xl shadow-[#110707] w-76 sm:w-82 max-w-full group">
@@ -798,11 +811,18 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* APP SIMULATOR CONTAINER */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-none pb-20">
+                {/* SCREENSHOT CAROUSEL */}
+                <div className="flex-1 overflow-hidden relative bg-[#150d0d] flex flex-col">
                   
-                  {/* APP TAB 1: AKADEMIC (PORTAL GRADE SYSTEM) */}
-                  {activeTab === "akademic" && (
+                  {/* CAROUSEL IMAGE DISPLAY */}
+                  <img
+                    src={appScreenshots[carouselIndex]}
+                    alt={`Akademic App Screenshot ${carouselIndex + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+
+                  {/* Hidden: APP TAB 1: AKADEMIC (PORTAL GRADE SYSTEM) */}
+                  {false && activeTab === "akademic" && (
                     <div className="space-y-4">
                       
                       {/* Crimson Academic Banner Segment (Simulates top card in screenshot 4) */}
@@ -963,8 +983,8 @@ export default function App() {
                     </div>
                   )}
 
-                  {/* APP TAB 2: SCHEDULE PLANNER */}
-                  {activeTab === "schedule" && (
+                  {/* Hidden: APP TAB 2: SCHEDULE PLANNER */}
+                  {false && activeTab === "schedule" && (
                     <div className="space-y-4">
                       
                       {/* Class Schedule header with Red Circular add key from Snapshot 3 */}
@@ -1053,8 +1073,8 @@ export default function App() {
                     </div>
                   )}
 
-                  {/* APP TAB 3: AKADEMIC REPORT (OFFICIAL PREVIEW CARD) */}
-                  {activeTab === "report" && (
+                  {/* Hidden: APP TAB 3: AKADEMIC REPORT (OFFICIAL PREVIEW CARD) */}
+                  {false && activeTab === "report" && (
                     <div className="space-y-4">
                       
                       <div className="space-y-0.5">
@@ -1149,6 +1169,36 @@ export default function App() {
                     </div>
                   )}
 
+                </div>
+
+                {/* Carousel Navigation Controls */}
+                <div className="absolute bottom-16 left-0 right-0 px-3 py-2 flex items-center justify-between bg-gradient-to-t from-[#150d0d] to-transparent">
+                  <button
+                    onClick={() => setCarouselIndex((prev) => (prev - 1 + appScreenshots.length) % appScreenshots.length)}
+                    className="text-[#cca038] hover:scale-110 active:scale-95 transition-transform"
+                    aria-label="Previous screenshot"
+                  >
+                    <ChevronRight size={20} className="rotate-180" />
+                  </button>
+
+                  <div className="flex items-center gap-1.5">
+                    {appScreenshots.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setCarouselIndex(idx)}
+                        className={`h-1.5 rounded-full transition-all ${idx === carouselIndex ? "bg-[#cca038] w-5" : "bg-[#cca038]/40 w-1.5 hover:bg-[#cca038]/60"}`}
+                        aria-label={`Go to screenshot ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => setCarouselIndex((prev) => (prev + 1) % appScreenshots.length)}
+                    className="text-[#cca038] hover:scale-110 active:scale-95 transition-transform"
+                    aria-label="Next screenshot"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
                 </div>
 
                 {/* BOTTOM NAVIGATION (MSU Exact tabs from screenshot) */}
