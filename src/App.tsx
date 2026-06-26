@@ -172,6 +172,22 @@ export default function App() {
   const [mirrorLink1, setMirrorLink1] = useState("https://github.com/XCDeveloper22/Akademicapp.apk/raw/main/Akademic%20v1.2.1.apk");
   const [mirrorLink2, setMirrorLink2] = useState("https://raw.githubusercontent.com/XCDeveloper22/Akademicapp.apk/main/Akademic%20v1.2.1.apk");
 
+  // Load saved APK config from localStorage on mount
+  React.useEffect(() => {
+    const savedConfig = localStorage.getItem('akademicAPKConfig');
+    if (savedConfig) {
+      try {
+        const config = JSON.parse(savedConfig);
+        if (config.apkVersion) setApkVersion(config.apkVersion);
+        if (config.primaryDownloadUrl !== undefined) setPrimaryDownloadUrl(config.primaryDownloadUrl);
+        if (config.mirrorLink1 !== undefined) setMirrorLink1(config.mirrorLink1);
+        if (config.mirrorLink2 !== undefined) setMirrorLink2(config.mirrorLink2);
+      } catch (err) {
+        console.error('Failed to load APK config:', err);
+      }
+    }
+  }, []);
+
   // GitHub info
   const githubRepo = "https://github.com/XCDeveloper22/Akademicapp.apk.git";
   const apkDownloadUrl = primaryDownloadUrl;
@@ -254,7 +270,14 @@ export default function App() {
 
   const handleUpdateApk = (e: React.FormEvent) => {
     e.preventDefault();
-    triggerToast(`APK updated to v${apkVersion}! Download links updated.`);
+    const configToSave = {
+      apkVersion,
+      primaryDownloadUrl,
+      mirrorLink1,
+      mirrorLink2
+    };
+    localStorage.setItem('akademicAPKConfig', JSON.stringify(configToSave));
+    triggerToast(`✓ APK configuration saved! Version: v${apkVersion}`);
   };
 
   const handleDownloadClick = () => {
