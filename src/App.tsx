@@ -1,12 +1,12 @@
 import React, { useState, useMemo, FormEvent } from "react";
-import { 
-  Download, 
-  Smartphone, 
-  ShieldCheck, 
-  Calendar, 
-  BookOpen, 
-  CheckCircle, 
-  ChevronRight, 
+import {
+  Download,
+  Smartphone,
+  ShieldCheck,
+  Calendar,
+  BookOpen,
+  CheckCircle,
+  ChevronRight,
   Grid,
   Sparkles,
   Info,
@@ -27,7 +27,8 @@ import {
   MessageSquare,
   AlertTriangle,
   Send,
-  QrCode
+  QrCode,
+  X
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -162,9 +163,18 @@ export default function App() {
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
 
+  // Admin panel state
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [adminPassword, setAdminPassword] = useState("");
+  const [apkVersion, setApkVersion] = useState("1.2.1");
+  const [primaryDownloadUrl, setPrimaryDownloadUrl] = useState("https://raw.githubusercontent.com/XCDeveloper22/Akademicapp.apk/main/Akademic%20v1.2.1.apk");
+  const [mirrorLink1, setMirrorLink1] = useState("https://github.com/XCDeveloper22/Akademicapp.apk/raw/main/Akademic%20v1.2.1.apk");
+  const [mirrorLink2, setMirrorLink2] = useState("https://raw.githubusercontent.com/XCDeveloper22/Akademicapp.apk/main/Akademic%20v1.2.1.apk");
+
   // GitHub info
   const githubRepo = "https://github.com/XCDeveloper22/Akademicapp.apk.git";
-  const apkDownloadUrl = "https://raw.githubusercontent.com/XCDeveloper22/Akademicapp.apk/main/Akademic%20v1.2.1.apk";
+  const apkDownloadUrl = primaryDownloadUrl;
 
   // dynamic calculation for MSU Cumulative GWA (Weighted Average)
   // GWA formulation = sum(grade * credits) / sum(credits)
@@ -222,6 +232,29 @@ export default function App() {
     setTimeout(() => {
       setSimulatedToast(null);
     }, 3000);
+  };
+
+  const handleAdminLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (adminPassword === "KAMENOSKO") {
+      setIsAdminAuthenticated(true);
+      setAdminPassword("");
+      triggerToast("Admin access granted!");
+    } else {
+      setAdminPassword("");
+      triggerToast("Invalid password!");
+    }
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdminAuthenticated(false);
+    setShowAdminPanel(false);
+    triggerToast("Logged out from admin panel");
+  };
+
+  const handleUpdateApk = (e: React.FormEvent) => {
+    e.preventDefault();
+    triggerToast(`APK updated to v${apkVersion}! Download links updated.`);
   };
 
   const handleDownloadClick = () => {
@@ -517,7 +550,13 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-3">
-            <button 
+            <button
+              onClick={() => setShowAdminPanel(!showAdminPanel)}
+              className="text-[#cca038] hover:text-[#f5ecd7] text-sm font-mono font-semibold transition-colors opacity-60 hover:opacity-100"
+            >
+              Admin
+            </button>
+            <button
               onClick={handleDownloadClick}
               className="bg-gradient-to-r from-[#9c1c1c] to-[#bf2121] px-4 py-2 rounded-xl text-sm font-semibold text-white shadow-lg shadow-[#9c1c1c]/30 hover:shadow-[#bf2121]/40 border border-[#cca038]/30 transition-all duration-200 active:scale-95 flex items-center gap-2"
             >
@@ -579,56 +618,6 @@ export default function App() {
               </p>
             </motion.div>
 
-            {/* Latest Update Video Advertisement Carousel */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.15 }}
-              className="w-full max-w-xl rounded-2xl bg-gradient-to-b from-[#251515] to-[#1a0f0f] border border-[#cca038]/30 p-4 md:p-6 relative overflow-hidden shadow-2xl"
-            >
-              <div className="absolute -top-10 -right-10 w-44 h-44 bg-[#cca038]/5 rounded-full blur-2xl pointer-events-none" />
-
-              <div className="space-y-3">
-                <div className="text-[10px] font-mono text-[#cca038] uppercase tracking-wider font-semibold">Latest Update Preview</div>
-
-                <div className="relative aspect-video rounded-xl overflow-hidden bg-[#1a0f0f] border border-[#cca038]/20">
-                  <AnimatePresence mode="wait">
-                    <motion.img
-                      key={currentCarouselIndex}
-                      src={carouselImages[currentCarouselIndex]}
-                      alt={`Akademic app screenshot ${currentCarouselIndex + 1}`}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.5 }}
-                      className="w-full h-full object-cover"
-                    />
-                  </AnimatePresence>
-
-                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-[#000]/60 px-2.5 py-1 rounded-full backdrop-blur-sm">
-                    {carouselImages.map((_, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setCurrentCarouselIndex(idx)}
-                        className={`h-1.5 rounded-full transition-all ${
-                          idx === currentCarouselIndex
-                            ? 'w-6 bg-[#cca038]'
-                            : 'w-1.5 bg-[#cca038]/40 hover:bg-[#cca038]/60'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between pt-2">
-                  <span className="text-xs text-[#a19088] font-mono">
-                    Frame {currentCarouselIndex + 1} / {carouselImages.length}
-                  </span>
-                  <span className="text-[10px] font-mono text-[#cca038]/70">Auto-playing</span>
-                </div>
-              </div>
-            </motion.div>
-
             {/* Main Interactive Premium Download Center Card */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -643,7 +632,7 @@ export default function App() {
                 <div className="space-y-1">
                   <div className="text-[10px] font-mono text-[#cca038] uppercase tracking-wider">OFFICIAL APP</div>
                   <div className="text-white font-display font-extrabold text-xl flex items-center gap-2">
-                    Akademic v1.2.1.apk
+                    Akademic v{apkVersion}.apk
                     <span className="text-[10px] px-2 py-0.5 rounded bg-[#9c1c1c]/30 text-[#f5ecd7] border border-[#9c1c1c]/60 font-mono font-semibold">XC RELEASE</span>
                   </div>
                 </div>
@@ -665,7 +654,7 @@ export default function App() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <a
-                    href="https://github.com/XCDeveloper22/Akademicapp.apk/raw/main/Akademic%20v1.2.1.apk"
+                    href={mirrorLink1}
                     download
                     className="p-3.5 rounded-xl bg-[#110707] hover:bg-[#1a0f0f] border border-[#cca038]/20 hover:border-[#cca038]/50 text-center font-semibold text-xs text-[#cca038] flex items-center justify-center gap-2 transition-colors"
                   >
@@ -674,7 +663,7 @@ export default function App() {
                   </a>
 
                   <a
-                    href="https://raw.githubusercontent.com/XCDeveloper22/Akademicapp.apk/main/Akademic%20v1.2.1.apk"
+                    href={mirrorLink2}
                     target="_blank"
                     rel="noreferrer"
                     className="p-3.5 rounded-xl bg-[#110707] hover:bg-[#1a0f0f] border border-[#cca038]/20 hover:border-[#cca038]/50 text-center font-semibold text-xs text-[#cca038] flex items-center justify-center gap-2 transition-colors"
@@ -1848,6 +1837,112 @@ export default function App() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Admin Panel Modal */}
+      {showAdminPanel && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="bg-[#1a0f0f] border border-[#cca038]/30 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl"
+          >
+            <div className="flex items-center justify-between">
+              <h2 className="font-display font-bold text-lg text-[#cca038] uppercase tracking-wider">Admin Panel</h2>
+              <button
+                onClick={() => setShowAdminPanel(false)}
+                className="text-zinc-500 hover:text-white transition-colors p-1"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {!isAdminAuthenticated ? (
+              <form onSubmit={handleAdminLogin} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-mono text-[#cca038] uppercase tracking-wider mb-2">Password</label>
+                  <input
+                    type="password"
+                    value={adminPassword}
+                    onChange={(e) => setAdminPassword(e.target.value)}
+                    placeholder="Enter admin password"
+                    className="w-full px-3 py-2 bg-[#110707] border border-[#cca038]/30 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-[#cca038]/70 transition-colors"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-[#9c1c1c] to-[#bf2121] hover:from-[#bf2121] hover:to-[#9c1c1c] p-2.5 rounded-lg font-bold text-white transition-all"
+                >
+                  Access Admin Panel
+                </button>
+              </form>
+            ) : (
+              <div className="space-y-5">
+                <div className="p-3 bg-[#9c1c1c]/20 border border-[#9c1c1c]/30 rounded-lg text-sm text-[#f5ecd7]">
+                  Admin access granted ✓
+                </div>
+
+                <form onSubmit={handleUpdateApk} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-mono text-[#cca038] uppercase tracking-wider mb-2">APK Version</label>
+                    <input
+                      type="text"
+                      value={apkVersion}
+                      onChange={(e) => setApkVersion(e.target.value)}
+                      placeholder="e.g., 1.2.1"
+                      className="w-full px-3 py-2 bg-[#110707] border border-[#cca038]/30 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-[#cca038]/70 transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-[#cca038] uppercase tracking-wider mb-2">Primary Download URL</label>
+                    <textarea
+                      value={primaryDownloadUrl}
+                      onChange={(e) => setPrimaryDownloadUrl(e.target.value)}
+                      rows={2}
+                      className="w-full px-3 py-2 bg-[#110707] border border-[#cca038]/30 rounded-lg text-white text-xs placeholder-zinc-500 focus:outline-none focus:border-[#cca038]/70 transition-colors resize-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-[#cca038] uppercase tracking-wider mb-2">Mirror Link 1</label>
+                    <textarea
+                      value={mirrorLink1}
+                      onChange={(e) => setMirrorLink1(e.target.value)}
+                      rows={2}
+                      className="w-full px-3 py-2 bg-[#110707] border border-[#cca038]/30 rounded-lg text-white text-xs placeholder-zinc-500 focus:outline-none focus:border-[#cca038]/70 transition-colors resize-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-[#cca038] uppercase tracking-wider mb-2">Mirror Link 2</label>
+                    <textarea
+                      value={mirrorLink2}
+                      onChange={(e) => setMirrorLink2(e.target.value)}
+                      rows={2}
+                      className="w-full px-3 py-2 bg-[#110707] border border-[#cca038]/30 rounded-lg text-white text-xs placeholder-zinc-500 focus:outline-none focus:border-[#cca038]/70 transition-colors resize-none"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 p-2.5 rounded-lg font-bold text-white transition-all"
+                  >
+                    Update APK Configuration
+                  </button>
+                </form>
+
+                <button
+                  onClick={handleAdminLogout}
+                  className="w-full px-4 py-2 bg-[#110707] hover:bg-[#1a0f0f] border border-zinc-500/30 rounded-lg text-xs font-mono text-zinc-400 hover:text-white transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </motion.div>
         </div>
       )}
 
