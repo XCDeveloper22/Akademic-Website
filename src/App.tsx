@@ -579,56 +579,6 @@ export default function App() {
               </p>
             </motion.div>
 
-            {/* Latest Update Video Advertisement Carousel */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.15 }}
-              className="w-full max-w-xl rounded-2xl bg-gradient-to-b from-[#251515] to-[#1a0f0f] border border-[#cca038]/30 p-4 md:p-6 relative overflow-hidden shadow-2xl"
-            >
-              <div className="absolute -top-10 -right-10 w-44 h-44 bg-[#cca038]/5 rounded-full blur-2xl pointer-events-none" />
-
-              <div className="space-y-3">
-                <div className="text-[10px] font-mono text-[#cca038] uppercase tracking-wider font-semibold">Latest Update Preview</div>
-
-                <div className="relative aspect-video rounded-xl overflow-hidden bg-[#1a0f0f] border border-[#cca038]/20">
-                  <AnimatePresence mode="wait">
-                    <motion.img
-                      key={currentCarouselIndex}
-                      src={carouselImages[currentCarouselIndex]}
-                      alt={`Akademic app screenshot ${currentCarouselIndex + 1}`}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.5 }}
-                      className="w-full h-full object-cover"
-                    />
-                  </AnimatePresence>
-
-                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-[#000]/60 px-2.5 py-1 rounded-full backdrop-blur-sm">
-                    {carouselImages.map((_, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setCurrentCarouselIndex(idx)}
-                        className={`h-1.5 rounded-full transition-all ${
-                          idx === currentCarouselIndex
-                            ? 'w-6 bg-[#cca038]'
-                            : 'w-1.5 bg-[#cca038]/40 hover:bg-[#cca038]/60'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between pt-2">
-                  <span className="text-xs text-[#a19088] font-mono">
-                    Frame {currentCarouselIndex + 1} / {carouselImages.length}
-                  </span>
-                  <span className="text-[10px] font-mono text-[#cca038]/70">Auto-playing</span>
-                </div>
-              </div>
-            </motion.div>
-
             {/* Main Interactive Premium Download Center Card */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
